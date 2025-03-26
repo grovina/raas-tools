@@ -1,0 +1,27 @@
+{
+  "name": "raas-tools",
+  "version": "1.0.0",
+  "description": "Tools for RaaS accounting and operations",
+  "private": true,
+  "scripts": {
+    "generate-invoice": "ts-node src/generate-invoice.ts",
+    "generate-buchfuehrung": "ts-node src/buchfuehrung-generator.ts",
+    "md-to-pdf": "ts-node src/md-to-pdf.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "commander": "^13.1.0",
+    "markdown-it": "^14.1.0",
+    "pdfkit": "^0.14.0",
+    "puppeteer": "^24.4.0",
+    "swissqrbill": "^4.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^20.10.6",
+    "@types/pdfkit": "^0.13.3",
+    "@types/puppeteer": "^7.0.4"
+  }
+}
