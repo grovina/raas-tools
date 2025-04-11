@@ -1,15 +1,24 @@
 #!/usr/bin/env node
 
-import { execSync } from 'child_process';
+import * as childProcess from 'child_process';
 import { Command } from 'commander';
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
 
-// Get the directory name correctly in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Define types for our options
+interface MermaidOptions {
+  output?: string;
+  extract: boolean;
+  width: string;
+  height: string;
+  background: string;
+  theme: string;
+  keepTemp: boolean;
+}
+
+// Current directory
+const __dirname = path.resolve();
 
 // Parse command line arguments
 const program = new Command();
@@ -26,12 +35,12 @@ program
   .option('-k, --keep-temp', 'Keep temporary files', false)
   .parse(process.argv);
 
-const options = program.opts();
+const options = program.opts() as MermaidOptions;
 const inputFile = program.args[0];
 
 // Check if mermaid-cli is installed
 try {
-  execSync('mmdc --version', { stdio: 'ignore' });
+  childProcess.execSync('mmdc --version', { stdio: 'ignore' });
 } catch (error) {
   console.error('Error: mermaid-cli is not installed.');
   console.error('Please install it using: npm install -g @mermaid-js/mermaid-cli');
@@ -42,7 +51,7 @@ try {
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mermaid-to-png-'));
 
 // Process a single Mermaid diagram file
-function processMermaidFile(mermaidFile, outputFile) {
+function processMermaidFile(mermaidFile: string, outputFile: string): boolean {
   console.log(`Converting ${mermaidFile} to ${outputFile}...`);
   
   const configFile = path.join(tempDir, 'mermaid-config.json');
@@ -72,22 +81,23 @@ function processMermaidFile(mermaidFile, outputFile) {
   const command = commandParts.join(' ');
   
   try {
-    execSync(command, { stdio: 'inherit' });
+    childProcess.execSync(command, { stdio: 'inherit' });
     console.log(`Successfully generated ${outputFile}`);
     return true;
   } catch (error) {
-    console.error(`Error generating diagram: ${error.message}`);
+    const err = error as Error;
+    console.error(`Error generating diagram: ${err.message}`);
     return false;
   }
 }
 
 // Extract Mermaid diagrams from Markdown
-function extractMermaidFromMarkdown(markdownFile) {
+function extractMermaidFromMarkdown(markdownFile: string): string[] {
   console.log(`Extracting Mermaid diagrams from ${markdownFile}...`);
   
   const content = fs.readFileSync(markdownFile, 'utf8');
   const mermaidPattern = /```mermaid\n([\s\S]*?)\n```/g;
-  const diagrams = [];
+  const diagrams: string[] = [];
   let match;
   
   while ((match = mermaidPattern.exec(content)) !== null) {
@@ -164,7 +174,8 @@ try {
     processMermaidFile(inputFile, outputFile);
   }
 } catch (error) {
-  console.error(`Error: ${error.message}`);
+  const err = error as Error;
+  console.error(`Error: ${err.message}`);
   process.exit(1);
 } finally {
   // Clean up temporary directory

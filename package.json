@@ -7,9 +7,14 @@
     "generate-invoice": "ts-node src/generate-invoice.ts",
     "generate-buchfuehrung": "ts-node src/buchfuehrung-generator.ts",
     "md-to-pdf": "ts-node src/md-to-pdf.ts",
+    "mermaid-to-png": "ts-node src/mermaid-to-png.ts",
     "build": "tsc"
   },
+  "bin": {
+    "mermaid-to-png": "dist/mermaid-to-png.js"
+  },
   "dependencies": {
+    "@mermaid-js/mermaid-cli": "^10.3.0",
     "commander": "^13.1.0",
     "markdown-it": "^14.1.0",
     "pdfkit": "^0.14.0",
@@ -20,7 +25,7 @@
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^20.10.6",
+    "@types/node": "^22.14.0",
     "@types/pdfkit": "^0.13.3",
     "@types/puppeteer": "^7.0.4"
   }
