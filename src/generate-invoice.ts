@@ -109,7 +109,7 @@ const dueDate = new Date(invoiceData.date);
 dueDate.setDate(dueDate.getDate() + 30);
 
 // Create a new PDF document
-const inputBaseName = path.basename(inputFile, path.extname(inputFile));
+const inputBaseName = path.basename(inputFile, path.extname(inputFile)).split('-').slice(2).join('-');
 const filename = `INV-${invoiceData.number}-${inputBaseName}.pdf`;
 const stream = createWriteStream(filename);
 const pdf = new PDFDocument({ size: "A4" });
