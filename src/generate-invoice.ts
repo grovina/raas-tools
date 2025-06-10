@@ -88,9 +88,6 @@ const invoiceData: InvoiceData = (() => {
   };
 })();
 
-// Use the columns directly from invoiceData
-const columnsToDisplay = invoiceData.columns;
-
 // Helper function to handle column width
 function getColumnWidth(key: string): number | undefined {
   return key === "description" ? undefined : mm2pt(30);
@@ -111,7 +108,8 @@ dueDate.setDate(dueDate.getDate() + 30);
 // Create a new PDF document
 const inputBaseName = path.basename(inputFile, path.extname(inputFile)).split('-').slice(2).join('-');
 const filename = `INV-${invoiceData.number}-${inputBaseName}.pdf`;
-const stream = createWriteStream(filename);
+const outputPath = path.join(path.dirname(path.resolve(inputFile)), filename);
+const stream = createWriteStream(outputPath);
 const pdf = new PDFDocument({ size: "A4" });
 pdf.pipe(stream);
 
@@ -481,4 +479,4 @@ if (invoiceData.currency === "CHF" || invoiceData.currency === "EUR") {
 // Finalize the document
 pdf.end();
 
-console.log(`Generated ${filename}`);
+console.log(`Generated ${outputPath}`);
